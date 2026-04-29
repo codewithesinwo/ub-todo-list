@@ -15,7 +15,6 @@ export default function UbTodoApp() {
 	const [editValue, setEditValue] = useState("");
 	const [draggedTodo, setDraggedTodo] = useState(null);
 
-	// Load todos from localStorage on mount
 	useEffect(() => {
 		const savedTodos = localStorage.getItem("todos");
 		const savedDarkMode = localStorage.getItem("darkMode");
@@ -27,12 +26,10 @@ export default function UbTodoApp() {
 		}
 	}, []);
 
-	// Save todos to localStorage
 	useEffect(() => {
 		localStorage.setItem("todos", JSON.stringify(todos));
 	}, [todos]);
 
-	// Save dark mode preference
 	useEffect(() => {
 		localStorage.setItem("darkMode", JSON.stringify(isToggle));
 	}, [isToggle]);
@@ -49,7 +46,6 @@ export default function UbTodoApp() {
 		}
 	}, [isToggle]);
 
-	// Add new todo
 	const addTodo = (e) => {
 		if (e.key === "Enter" && inputValue.trim()) {
 			const newTodo = {
@@ -62,47 +58,44 @@ export default function UbTodoApp() {
 		}
 	};
 
-	// Delete todo
 	const deleteTodo = (id) => {
 		setTodos(todos.filter((todo) => todo.id !== id));
 	};
 
-	// Toggle todo completion
 	const toggleTodo = (id) => {
-		setTodos(todos.map((todo) =>
-			todo.id === id ? { ...todo, completed: !todo.completed } : todo
-		));
+		setTodos(
+			todos.map((todo) =>
+				todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+			),
+		);
 	};
 
-	// Start editing
 	const startEdit = (todo) => {
 		setEditingId(todo.id);
 		setEditValue(todo.text);
 	};
 
-	// Save edit
 	const saveEdit = (id) => {
 		if (editValue.trim()) {
-			setTodos(todos.map((todo) =>
-				todo.id === id ? { ...todo, text: editValue } : todo
-			));
+			setTodos(
+				todos.map((todo) =>
+					todo.id === id ? { ...todo, text: editValue } : todo,
+				),
+			);
 		}
 		setEditingId(null);
 		setEditValue("");
 	};
 
-	// Cancel edit
 	const cancelEdit = () => {
 		setEditingId(null);
 		setEditValue("");
 	};
 
-	// Clear completed
 	const clearCompleted = () => {
 		setTodos(todos.filter((todo) => !todo.completed));
 	};
 
-	// Drag and drop handlers
 	const handleDragStart = (todo) => {
 		setDraggedTodo(todo);
 	};
@@ -125,7 +118,6 @@ export default function UbTodoApp() {
 		setDraggedTodo(null);
 	};
 
-	// Filter todos
 	const filteredTodos = todos.filter((todo) => {
 		if (filter === "active") return !todo.completed;
 		if (filter === "completed") return todo.completed;
@@ -143,7 +135,9 @@ export default function UbTodoApp() {
 						<div
 							onClick={toggleDarkMood}
 							className="text-white text-xl cursor-pointer">
-							{isToggle ? <FaSun /> : <FaRegMoon />}
+							{isToggle ?
+								<FaSun />
+							:	<FaRegMoon />}
 						</div>
 					</div>
 
@@ -163,12 +157,11 @@ export default function UbTodoApp() {
 
 			<div className="w-full max-w-xl px-4 -mt-16 pb-8">
 				<div className="bg-gray-900 rounded-md shadow-xl overflow-hidden dark:bg-amber-50">
-					{filteredTodos.length === 0 ? (
+					{filteredTodos.length === 0 ?
 						<div className="p-8 text-center text-gray-400 dark:text-gray-600">
 							<p>No todos to display</p>
 						</div>
-					) : (
-						<>
+					:	<>
 							{filteredTodos.map((todo) => (
 								<div
 									key={todo.id}
@@ -176,9 +169,8 @@ export default function UbTodoApp() {
 									onDragStart={() => handleDragStart(todo)}
 									onDragOver={handleDragOver}
 									onDrop={() => handleDrop(todo)}
-									className="flex items-center justify-between p-4 border-b border-gray-700 dark:border-gray-300 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors cursor-move"
-								>
-									{editingId === todo.id ? (
+									className="flex items-center justify-between p-4 border-b border-gray-700 dark:border-gray-300 hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors cursor-move">
+									{editingId === todo.id ?
 										<div className="flex items-center gap-4 flex-1">
 											<input
 												type="text"
@@ -189,39 +181,33 @@ export default function UbTodoApp() {
 											/>
 											<button
 												onClick={() => saveEdit(todo.id)}
-												className="text-green-500 hover:text-green-400 font-bold"
-											>
+												className="text-green-500 hover:text-green-400 font-bold">
 												Save
 											</button>
 											<button
 												onClick={cancelEdit}
-												className="text-red-500 hover:text-red-400 font-bold"
-											>
+												className="text-red-500 hover:text-red-400 font-bold">
 												Cancel
 											</button>
 										</div>
-									) : (
-										<>
+									:	<>
 											<div className="flex items-center gap-4 flex-1">
 												<div
 													onClick={() => toggleTodo(todo.id)}
-													className="cursor-pointer text-xl"
-												>
-													{todo.completed ? (
+													className="cursor-pointer text-xl">
+													{todo.completed ?
 														<div className="flex items-center justify-center w-6 h-6 bg-blue-500 rounded-full">
 															<FaCheck className="text-white text-sm" />
 														</div>
-													) : (
-														<FiCircle className="text-gray-400 dark:text-gray-500" />
-													)}
+													:	<FiCircle className="text-gray-400 dark:text-gray-500" />
+													}
 												</div>
 												<p
 													className={`${
-														todo.completed
-															? "line-through text-gray-400 dark:text-gray-500"
-															: "text-white dark:text-black"
-													}`}
-												>
+														todo.completed ?
+															"line-through text-gray-400 dark:text-gray-500"
+														:	"text-white dark:text-black"
+													}`}>
 													{todo.text}
 												</p>
 											</div>
@@ -236,11 +222,11 @@ export default function UbTodoApp() {
 												/>
 											</div>
 										</>
-									)}
+									}
 								</div>
 							))}
 						</>
-					)}
+					}
 
 					<div className="flex flex-col sm:flex-row justify-between items-center p-4 text-gray-400 text-sm border-t border-gray-700 dark:border-gray-300 gap-4">
 						<span className="dark:text-black">
@@ -251,39 +237,35 @@ export default function UbTodoApp() {
 							<button
 								onClick={() => setFilter("all")}
 								className={`cursor-pointer transition ${
-									filter === "all"
-										? "text-blue-500 font-bold"
-										: "hover:text-white dark:hover:text-black dark:text-black"
-								}`}
-							>
+									filter === "all" ?
+										"text-blue-500 font-bold"
+									:	"hover:text-white dark:hover:text-black dark:text-black"
+								}`}>
 								All
 							</button>
 							<button
 								onClick={() => setFilter("active")}
 								className={`cursor-pointer transition ${
-									filter === "active"
-										? "text-blue-500 font-bold"
-										: "hover:text-white dark:hover:text-black dark:text-black"
-								}`}
-							>
+									filter === "active" ?
+										"text-blue-500 font-bold"
+									:	"hover:text-white dark:hover:text-black dark:text-black"
+								}`}>
 								Active
 							</button>
 							<button
 								onClick={() => setFilter("completed")}
 								className={`cursor-pointer transition ${
-									filter === "completed"
-										? "text-blue-500 font-bold"
-										: "hover:text-white dark:hover:text-black dark:text-black"
-								}`}
-							>
+									filter === "completed" ?
+										"text-blue-500 font-bold"
+									:	"hover:text-white dark:hover:text-black dark:text-black"
+								}`}>
 								Completed
 							</button>
 						</div>
 
 						<button
 							onClick={clearCompleted}
-							className="hover:text-white dark:hover:text-black dark:text-black cursor-pointer transition"
-						>
+							className="hover:text-white dark:hover:text-black dark:text-black cursor-pointer transition">
 							Clear Completed
 						</button>
 					</div>
